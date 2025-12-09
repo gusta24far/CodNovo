@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:myapp/api/instrucao.dart';
 import 'package:myapp/domain/instrucoes.dart';
+
+import '../api/google_maps_page.dart';
 
 class Uso extends StatefulWidget {
   const Uso({super.key});
@@ -132,8 +136,10 @@ class _UsoState extends State<Uso> {
             ),
           ],
         ),
+        floatingActionButton: buildFloatingActionButton(),
       ),
     );
+
   }
 
   onPressedIconButton() {
@@ -173,4 +179,21 @@ class _UsoState extends State<Uso> {
       ),
     );
   }
+  
+  buildFloatingActionButton () {
+    return FloatingActionButton(onPressed: () async {
+      List<Location> locations = await locationFromAddress("Arapiraca");
+      LatLng position = LatLng(locations[0].latitude, locations[0].longitude);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return GoogleMapsPage(position: position);
+          },
+        ),
+      );
+    }, child: Icon(Icons.map));
+  }
+  
 }
